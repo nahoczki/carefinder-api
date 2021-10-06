@@ -23,7 +23,7 @@ data class Hospital(
 
 data class HospitalLocation(
     val humanAddress: String,
-    val latitude: Long,
-    val longitude: Long,
+    val latitude: Double,
+    val longitude: Double,
     val needsRecoding: String
 )

@@ -2,21 +2,30 @@ package com.zolinahoczki.carefinderapi.controllers
 
 import com.zolinahoczki.carefinderapi.entities.Hospital
 import com.zolinahoczki.carefinderapi.repositories.HospitalRepository
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.query.Criteria
+import org.springframework.data.mongodb.core.query.Query
+import org.springframework.data.mongodb.core.query.isEqualTo
+import org.springframework.stereotype.Controller
 
-@RestController
-@RequestMapping("/hospitals")
+@Controller
 class HospitalController(
-    private val hospitalRepository: HospitalRepository
+    private val hospitalRepository: HospitalRepository,
+    private val mongoTemplate: MongoTemplate
 ) {
     /// TODO: Implement Methods
+    fun getAll() : List<Hospital> {
+        return hospitalRepository.findAll()
+    }
 
-    @GetMapping
-    fun getAllHospitals() : ResponseEntity<List<Hospital>> {
-        val hospitals = hospitalRepository.findAll()
-        return ResponseEntity.ok(hospitals)
+    fun search(searchQuery: Map<String, String>) : List<Hospital>? {
+
+        val query = Query()
+
+        searchQuery.forEach{
+            query.addCriteria(Criteria.where(it.key).isEqualTo(it.value))
+        }
+
+        return mongoTemplate.find(query, Hospital::class.java)
     }
 }
