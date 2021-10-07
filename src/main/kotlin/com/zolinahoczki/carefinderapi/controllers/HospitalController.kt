@@ -11,8 +11,11 @@ import org.springframework.stereotype.Controller
 @Controller
 class HospitalController(
     private val hospitalRepository: HospitalRepository,
-    private val mongoTemplate: MongoTemplate
+    private val mongoTemplate: MongoTemplate,
+
 ) {
+    private val params = listOf("providerId", "name", "city", "state", "zipCode", "county")
+
     /// TODO: Implement Methods
     fun getAll() : List<Hospital> {
         return hospitalRepository.findAll()
@@ -23,7 +26,8 @@ class HospitalController(
         val query = Query()
 
         searchQuery.forEach{
-            query.addCriteria(Criteria.where(it.key).isEqualTo(it.value))
+            if (!params.contains(it.key)) return null
+            query.addCriteria(Criteria.where(it.key).regex(it.value.uppercase()))
         }
 
         return mongoTemplate.find(query, Hospital::class.java)
