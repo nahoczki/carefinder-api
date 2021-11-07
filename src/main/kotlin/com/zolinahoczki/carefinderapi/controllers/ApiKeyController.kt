@@ -36,7 +36,6 @@ class ApiKeyController(
 
     fun create(name: String) : ApiKey? {
         if (!apiKeyRepository.existsByName(name)) {
-            val createdDate = Date()
             var genKey = UUID.randomUUID().toString()
 
             // If generated key exists, keep generating until we find a unique one
@@ -44,7 +43,7 @@ class ApiKeyController(
                 genKey = UUID.randomUUID().toString()
             }
 
-            return mongoTemplate.insert(ApiKey(ObjectId(), name, genKey, createdDate))
+            return mongoTemplate.insert(ApiKey(name = name, apiKey = genKey))
         } else {
             return null
         }

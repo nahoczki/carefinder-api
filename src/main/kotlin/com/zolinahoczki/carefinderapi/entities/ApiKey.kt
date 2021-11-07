@@ -8,8 +8,8 @@ import java.util.*
 @Document(collection = "apikeys")
 data class ApiKey(
     @Id
-    val _id: ObjectId,
+    val _id: ObjectId? = ObjectId(),
     val name: String,
     val apiKey: String,
-    val createdAt: Date,
+    val createdAt: Date? = Date(),
 )

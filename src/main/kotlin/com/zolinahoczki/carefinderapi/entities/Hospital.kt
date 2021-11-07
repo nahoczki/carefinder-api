@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "hospitals")
 data class Hospital(
     @Id
-    val _id: ObjectId,
+    val _id: ObjectId? = ObjectId(),
     val providerId: String,
     val location: HospitalLocation,
     val name: String,
