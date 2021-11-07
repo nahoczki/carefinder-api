@@ -14,7 +14,7 @@ class HospitalRoutes(
 ) {
 
     @GetMapping("")
-    fun getHospitals(@RequestParam(required = false) params: Map<String, String>?) : ResponseEntity<List<Hospital>> {
+    fun getHospitals(@RequestParam(required = false) params: Map<String, String>?) : ResponseEntity<Any> {
         // Params are optional but are used to search
         return if (params == null) {
             ResponseEntity.ok(hospitalController.getAll())
@@ -24,7 +24,7 @@ class HospitalRoutes(
             if (data != null) {
                 ResponseEntity.ok(data)
             } else {
-                ResponseEntity.badRequest().build()
+                ResponseEntity.badRequest().body("400 Bad Request")
             }
         }
     }

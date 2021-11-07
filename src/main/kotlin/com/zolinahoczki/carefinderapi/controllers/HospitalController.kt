@@ -5,7 +5,6 @@ import com.zolinahoczki.carefinderapi.repositories.HospitalRepository
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
-import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.stereotype.Controller
 
 @Controller

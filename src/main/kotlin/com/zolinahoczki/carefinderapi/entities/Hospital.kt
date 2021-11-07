@@ -1,12 +1,13 @@
 package com.zolinahoczki.carefinderapi.entities
 
+import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "hospitals")
 data class Hospital(
     @Id
-    val _id: String,
+    val _id: ObjectId,
     val providerId: String,
     val location: HospitalLocation,
     val name: String,
