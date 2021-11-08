@@ -9,8 +9,14 @@ import java.util.*
 data class User(
     @Id
     val _id: ObjectId? = ObjectId(),
+    val role: String = Roles.USER.role,
     val email: String,
     val password: String,
     val createdAt: Date? = Date(),
     val lastSignedIn: Date? = Date(),
 )
+
+enum class Roles(val role: String) {
+    ADMIN("ADMIN"),
+    USER("USER")
+}
