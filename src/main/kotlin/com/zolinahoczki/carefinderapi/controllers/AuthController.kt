@@ -20,7 +20,25 @@ class AuthController(
     }
 
     fun register(email: String, password: String) : User? {
-        // TODO: Check if email exists
+
+        if (userRepository.existsByEmail(email)) {
+            return null
+        }
+
         return userRepository.save(User(email = email, password = passwordEncoder.encode(password)))
+    }
+
+    fun login(email: String, password: String) : User? {
+
+        val user = userRepository.findOneByEmail(email)
+
+        if (user != null) {
+            if (passwordEncoder.matches(password, user.password)) {
+                return user
+            }
+            return null
+        } else {
+            return null
+        }
     }
 }

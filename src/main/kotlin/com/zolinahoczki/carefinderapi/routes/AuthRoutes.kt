@@ -29,4 +29,14 @@ class AuthRoutes(
             ResponseEntity.badRequest().body("Error Creating ApiKey: Name taken")
         }
     }
+
+    @PostMapping("/login")
+    fun loginUser(@RequestParam(required = true) email: String, @RequestParam(required = true) password: String) : ResponseEntity<Any> {
+        val user = authController.login(email, password)
+        return if (user != null) {
+            ResponseEntity.ok(user)
+        } else {
+            ResponseEntity.badRequest().body("Wrong password")
+        }
+    }
 }
