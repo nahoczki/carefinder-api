@@ -1,14 +1,16 @@
 package com.zolinahoczki.carefinderapi.routes
 
 import com.zolinahoczki.carefinderapi.controllers.AuthController
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 
 @CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
 class AuthRoutes(
-    private val authController: AuthController
+    private val authController: AuthController,
 ) {
 
     @GetMapping("/users")
@@ -18,7 +20,13 @@ class AuthRoutes(
     }
 
     @PostMapping("/register")
-    fun registerUser() : ResponseEntity<Any> {
-        return ResponseEntity.ok(authController.getAll())
+    fun registerUser(@RequestParam(required = true) email: String, @RequestParam(required = true) password: String) : ResponseEntity<Any> {
+        val created = authController.register(email, password)
+
+        return if (created != null) {
+            ResponseEntity.ok(created)
+        } else {
+            ResponseEntity.badRequest().body("Error Creating ApiKey: Name taken")
+        }
     }
 }

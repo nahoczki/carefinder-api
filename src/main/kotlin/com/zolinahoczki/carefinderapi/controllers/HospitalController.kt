@@ -2,6 +2,7 @@ package com.zolinahoczki.carefinderapi.controllers
 
 import com.zolinahoczki.carefinderapi.entities.Hospital
 import com.zolinahoczki.carefinderapi.repositories.HospitalRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
@@ -9,15 +10,14 @@ import org.springframework.stereotype.Controller
 
 @Controller
 class HospitalController(
-    private val hospitalRepository: HospitalRepository,
+    @Autowired
     private val mongoTemplate: MongoTemplate,
-
 ) {
     private val params = listOf("providerId", "name", "city", "state", "zipCode", "county")
 
     /// TODO: Implement Methods
     fun getAll() : List<Hospital> {
-        return hospitalRepository.findAll()
+        return mongoTemplate.findAll(Hospital::class.java)
     }
 
     fun search(searchQuery: Map<String, String>) : List<Hospital>? {

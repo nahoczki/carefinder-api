@@ -3,6 +3,7 @@ package com.zolinahoczki.carefinderapi.controllers
 import com.zolinahoczki.carefinderapi.entities.ApiKey
 import com.zolinahoczki.carefinderapi.repositories.ApiKeyRepository
 import org.bson.types.ObjectId
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
@@ -11,7 +12,9 @@ import java.util.*
 
 @Controller
 class ApiKeyController(
+    @Autowired
     private val apiKeyRepository: ApiKeyRepository,
+    @Autowired
     private val mongoTemplate: MongoTemplate,
     ) {
 

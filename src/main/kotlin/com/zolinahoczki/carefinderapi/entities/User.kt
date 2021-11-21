@@ -3,13 +3,13 @@ package com.zolinahoczki.carefinderapi.entities
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
-import java.util.*
+import java.util.Date
 
 @Document(collection = "users")
 data class User(
     @Id
     val _id: ObjectId? = ObjectId(),
-    val role: String = Roles.USER.role,
+    val role: String? = Roles.USER.role,
     val email: String,
     val password: String,
     val createdAt: Date? = Date(),

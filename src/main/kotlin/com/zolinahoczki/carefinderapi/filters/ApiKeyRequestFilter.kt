@@ -4,6 +4,7 @@ import com.zolinahoczki.carefinderapi.entities.ApiKey
 import com.zolinahoczki.carefinderapi.repositories.ApiKeyRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.GenericFilterBean
 import java.io.IOException
@@ -16,7 +17,7 @@ import javax.servlet.http.HttpServletResponse
 
 
 @Component
-class ApiKeyRequestFilter(private val apiKeyRepository: ApiKeyRepository) : GenericFilterBean() {
+class ApiKeyRequestFilter(@Autowired private val apiKeyRepository: ApiKeyRepository) : GenericFilterBean() {
     @Throws(IOException::class, ServletException::class)
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         val req = request as HttpServletRequest
