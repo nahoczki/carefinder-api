@@ -16,16 +16,10 @@ class HospitalRoutes(
     @GetMapping("")
     fun getHospitals(@RequestParam(required = false) params: Map<String, String>?) : ResponseEntity<Any> {
         // Params are optional but are used to search
-        return if (params == null) {
-            ResponseEntity.ok(hospitalController.getAll())
+        return if (params == null || params.isEmpty()) {
+            hospitalController.getAll()
         } else {
-            val data = hospitalController.search(params)
-
-            if (data != null) {
-                ResponseEntity.ok(data)
-            } else {
-                ResponseEntity.badRequest().body("400 Bad Request")
-            }
+            hospitalController.search(params)
         }
     }
 }

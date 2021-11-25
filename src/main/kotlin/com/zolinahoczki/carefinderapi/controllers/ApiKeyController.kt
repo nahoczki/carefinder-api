@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import java.util.*
 
@@ -18,27 +19,21 @@ class ApiKeyController(
     private val mongoTemplate: MongoTemplate,
     ) {
 
-    private val params = listOf("apikey", "name")
-
     /// TODO: Implement Methods
-    fun getAll() : List<ApiKey> {
-        return apiKeyRepository.findAll()
+    fun getAll() : ResponseEntity<Any> {
+        return ResponseEntity.ok(apiKeyRepository.findAll())
     }
 
-    fun search(searchQuery: Map<String, String>) : List<ApiKey>? {
-
-        val query = Query()
-
-        searchQuery.forEach{
-            if (!params.contains(it.key)) return null
-            query.addCriteria(Criteria.where(it.key).regex(it.value.uppercase()))
-        }
-
-        return mongoTemplate.find(query, ApiKey::class.java)
+    fun searchByName(name: String) : ResponseEntity<Any> {
+        return ResponseEntity.ok(apiKeyRepository.findOneByName(name))
     }
 
-    fun create(name: String) : ApiKey? {
-        if (!apiKeyRepository.existsByName(name)) {
+    fun searchByApiKey(apiKey: String) : ResponseEntity<Any> {
+        return ResponseEntity.ok(apiKeyRepository.findOneByApiKey(apiKey))
+    }
+
+    fun create(name: String) : ResponseEntity<Any> {
+        return if (!apiKeyRepository.existsByName(name)) {
             var genKey = UUID.randomUUID().toString()
 
             // If generated key exists, keep generating until we find a unique one
@@ -46,9 +41,9 @@ class ApiKeyController(
                 genKey = UUID.randomUUID().toString()
             }
 
-            return mongoTemplate.insert(ApiKey(name = name, apiKey = genKey))
+            ResponseEntity.ok(mongoTemplate.insert(ApiKey(name = name, apiKey = genKey)))
         } else {
-            return null
+            ResponseEntity.badRequest().body("Error: Api key name already exists")
         }
     }
 }

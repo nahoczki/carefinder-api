@@ -13,28 +13,21 @@ class ApiKeyRoutes(
     @GetMapping("")
     fun getApiKeys(@RequestParam(required = false) params: Map<String, String>?) : ResponseEntity<Any> {
         // Params are optional but are used to search
-        return if (params == null) {
-            ResponseEntity.ok(apiKeyController.getAll())
+        return if (params == null || params.isEmpty()) {
+            apiKeyController.getAll()
         } else {
-            val data = apiKeyController.search(params)
-
-            if (data != null) {
-                ResponseEntity.ok(data)
+            if (params.contains("name")) {
+                apiKeyController.searchByName(params.getValue("name"))
+            } else if (params.contains("apikey")) {
+                apiKeyController.searchByApiKey(params.getValue("apikey"))
             } else {
-                ResponseEntity.badRequest().body("400 Bad Request")
+                ResponseEntity.badRequest().body("400 Bad request")
             }
         }
     }
 
     @PostMapping("")
     fun create(@RequestParam(required = true) name: String) : ResponseEntity<Any> {
-
-        val created = apiKeyController.create(name)
-
-        return if (created != null) {
-            ResponseEntity.ok(created)
-        } else {
-            ResponseEntity.badRequest().body("Error Creating ApiKey: Name taken")
-        }
+        return apiKeyController.create(name)
     }
 }

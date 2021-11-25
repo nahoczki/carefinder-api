@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 
 @Controller
@@ -16,19 +17,20 @@ class HospitalController(
     private val params = listOf("providerId", "name", "city", "state", "zipCode", "county")
 
     /// TODO: Implement Methods
-    fun getAll() : List<Hospital> {
-        return mongoTemplate.findAll(Hospital::class.java)
+    // Get all hospitals controller
+    fun getAll() : ResponseEntity<Any> {
+        return ResponseEntity.ok(mongoTemplate.findAll(Hospital::class.java));
     }
 
-    fun search(searchQuery: Map<String, String>) : List<Hospital>? {
+    fun search(searchQuery: Map<String, String>) : ResponseEntity<Any> {
 
         val query = Query()
 
         searchQuery.forEach{
-            if (!params.contains(it.key)) return null
+            if (!params.contains(it.key)) return ResponseEntity.badRequest().body("400 Bad Request")
             query.addCriteria(Criteria.where(it.key).regex(it.value.uppercase()))
         }
 
-        return mongoTemplate.find(query, Hospital::class.java)
+        return ResponseEntity.ok(mongoTemplate.find(query, Hospital::class.java))
     }
 }

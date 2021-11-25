@@ -16,7 +16,7 @@ class AuthRoutes(
     @GetMapping("/users")
     fun getAllUsers() : ResponseEntity<Any> {
         // Params are optional but are used to search
-        return ResponseEntity.ok(authController.getAll())
+        return authController.getAll()
     }
 
     @PostMapping("/register")
