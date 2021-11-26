@@ -23,3 +23,5 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew clean bootJar
+    - name: Restart the Service
+      run: sudo systemctl restart carefinder.service
