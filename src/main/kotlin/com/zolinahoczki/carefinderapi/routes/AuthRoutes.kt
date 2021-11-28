@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletResponse
 
 @CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
@@ -15,28 +16,17 @@ class AuthRoutes(
 
     @GetMapping("/users")
     fun getAllUsers() : ResponseEntity<Any> {
-        // Params are optional but are used to search
         return authController.getAll()
     }
 
     @PostMapping("/register")
     fun registerUser(@RequestParam(required = true) email: String, @RequestParam(required = true) password: String) : ResponseEntity<Any> {
-        val created = authController.register(email, password)
-
-        return if (created != null) {
-            ResponseEntity.ok(created)
-        } else {
-            ResponseEntity.badRequest().body("Error Creating ApiKey: Name taken")
-        }
+        return authController.register(email, password)
     }
 
     @PostMapping("/login")
-    fun loginUser(@RequestParam(required = true) email: String, @RequestParam(required = true) password: String) : ResponseEntity<Any> {
-        val user = authController.login(email, password)
-        return if (user != null) {
-            ResponseEntity.ok(user)
-        } else {
-            ResponseEntity.badRequest().body("Wrong password")
-        }
+    fun loginUser(@RequestParam(required = true) email: String,
+                  @RequestParam(required = true) password: String) : ResponseEntity<Any> {
+        return authController.login(email, password)
     }
 }

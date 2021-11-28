@@ -2,12 +2,15 @@ package com.zolinahoczki.carefinderapi.controllers
 
 import com.zolinahoczki.carefinderapi.entities.User
 import com.zolinahoczki.carefinderapi.repositories.UserRepository
-import org.apache.coyote.Response
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Controller
+import java.util.*
+import javax.servlet.http.HttpServletResponse
 
 @Controller
 class AuthController(
@@ -36,7 +39,22 @@ class AuthController(
 
         if (user != null) {
             if (passwordEncoder.matches(password, user.password)) {
-                return ResponseEntity.ok(user)
+
+                // Create JWT
+                val issuer = user.email
+
+                val jwt = Jwts.builder()
+                    .setIssuer(issuer)
+                    .setExpiration(Date(System.currentTimeMillis() + ((60 * 24 * 100) * 1000)))
+                    .signWith(SignatureAlgorithm.HS512, "\${carefinder.jwt.secret}")
+                    .compact()
+
+                val headers = HttpHeaders()
+                headers.add("Authorization", jwt)
+
+                return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(user)
             }
         }
         // By default, if user does not exist or password does not match, return this response
