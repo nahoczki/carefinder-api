@@ -22,4 +22,14 @@ class HospitalRoutes(
             hospitalController.search(params)
         }
     }
+
+    @DeleteMapping("")
+    fun deleteHospital(@RequestParam(required = false) params: Map<String, String>?,
+                       @RequestHeader(required = false) Authorization: String?) : ResponseEntity<Any> {
+        return if (params == null || params.isEmpty()) {
+            hospitalController.removeAll(Authorization)
+        } else {
+            hospitalController.removeBySearch(params, Authorization)
+        }
+    }
 }

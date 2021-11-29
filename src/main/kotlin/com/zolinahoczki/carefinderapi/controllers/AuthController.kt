@@ -6,6 +6,7 @@ import com.zolinahoczki.carefinderapi.repositories.UserRepository
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -19,6 +20,9 @@ class AuthController(
     @Autowired
     private val passwordEncoder: PasswordEncoder,
 ) {
+
+    @Value("\${carefinder.jwt.secret}")
+    private val jwtPrivateKey: String? = null
 
     fun getAll() : ResponseEntity<Any> {
         return ResponseEntity.ok(userRepository.findAll())
@@ -46,7 +50,7 @@ class AuthController(
                 val jwt = Jwts.builder()
                     .setIssuer(issuer)
                     .setExpiration(Date(System.currentTimeMillis() + ((60 * 24 * 100) * 1000)))
-                    .signWith(SignatureAlgorithm.HS512, "\${carefinder.jwt.secret}")
+                    .signWith(SignatureAlgorithm.HS512, jwtPrivateKey)
                     .compact()
 
                 val headers = HttpHeaders()
@@ -62,9 +66,9 @@ class AuthController(
     }
 
     fun validateAdmin(jwt: String): Boolean {
-        // Will try to get role, if role doesnt exist JWT is bad >:(
+        // Will try to see if user is an admin, if not get out >:(
         return try {
-            val jwtBody = Jwts.parser().setSigningKey("\${carefinder.jwt.secret}").parseClaimsJws(jwt).body
+            val jwtBody = Jwts.parser().setSigningKey(jwtPrivateKey).parseClaimsJws(jwt).body
             val user = userRepository.findOneByEmail(jwtBody.issuer)
             if (user != null) {
                 if (user.role == Roles.ADMIN.role) {
