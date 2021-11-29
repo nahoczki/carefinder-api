@@ -2,7 +2,9 @@ package com.zolinahoczki.carefinderapi.routes
 
 import com.zolinahoczki.carefinderapi.controllers.HospitalController
 import com.zolinahoczki.carefinderapi.entities.Hospital
+import com.zolinahoczki.carefinderapi.requestObjects.HospitalCreateRequest
 import org.springframework.http.HttpStatus
+import org.springframework.http.RequestEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -21,6 +23,12 @@ class HospitalRoutes(
         } else {
             hospitalController.search(params)
         }
+    }
+
+    @PostMapping("")
+    fun createHospital(@RequestBody body: HospitalCreateRequest,
+                       @RequestHeader(required = false) Authorization: String?) : ResponseEntity<Any> {
+        return hospitalController.createHospital(body, Authorization)
     }
 
     @DeleteMapping("")
