@@ -1,5 +1,6 @@
 package com.zolinahoczki.carefinderapi.controllers
 
+import com.zolinahoczki.carefinderapi.entities.Roles
 import com.zolinahoczki.carefinderapi.entities.User
 import com.zolinahoczki.carefinderapi.repositories.UserRepository
 import io.jsonwebtoken.Jwts
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Controller
 import java.util.*
-import javax.servlet.http.HttpServletResponse
 
 @Controller
 class AuthController(
@@ -59,5 +59,24 @@ class AuthController(
         }
         // By default, if user does not exist or password does not match, return this response
         return ResponseEntity.badRequest().body("User does not exist or password is incorrect")
+    }
+
+    fun validateAdmin(jwt: String): Boolean {
+        // Will try to get role, if role doesnt exist JWT is bad >:(
+        return try {
+            val jwtBody = Jwts.parser().setSigningKey("\${carefinder.jwt.secret}").parseClaimsJws(jwt).body
+            val user = userRepository.findOneByEmail(jwtBody.issuer)
+            if (user != null) {
+                if (user.role == Roles.ADMIN.role) {
+                    true
+                } else {
+                    throw Exception()
+                }
+            } else {
+                throw Exception()
+            }
+        } catch (e: Exception) {
+            false
+        }
     }
 }
