@@ -40,4 +40,11 @@ class HospitalRoutes(
             hospitalController.removeBySearch(params, Authorization)
         }
     }
+
+    @PutMapping("")
+    fun updateHospital(@RequestParam(required = true) providerId: String,
+                       @RequestBody(required = true) body: Map<String, String>,
+                       @RequestHeader(required = false) Authorization: String?) : ResponseEntity<Any> {
+        return hospitalController.updateHospital(providerId, body, Authorization)
+    }
 }

@@ -4,12 +4,14 @@ import com.zolinahoczki.carefinderapi.entities.Hospital
 import com.zolinahoczki.carefinderapi.entities.HospitalLocation
 import com.zolinahoczki.carefinderapi.requestObjects.HospitalCreateRequest
 import com.zolinahoczki.carefinderapi.responseObjects.DetailedResponse
+import com.zolinahoczki.carefinderapi.responseObjects.ErrorResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.find
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
+import org.springframework.data.mongodb.core.query.Update
 import org.springframework.data.mongodb.core.query.isEqualTo
-import org.springframework.data.mongodb.core.query.where
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 
@@ -21,6 +23,7 @@ class HospitalController(
     private val mongoTemplate: MongoTemplate,
 ) {
     private val params = listOf("providerId", "name", "city", "state", "zipCode", "county")
+    private val allowedEdits = listOf("providerId", "name", "city", "state", "zipCode", "county", "phoneNumber")
 
     // Getters
     fun getAll() : ResponseEntity<Any> {
@@ -105,8 +108,36 @@ class HospitalController(
                 )
 
                 val added = mongoTemplate.insert(hospital)
+                return ResponseEntity.status(201).body(DetailedResponse("Successfully Saved Hospital", listOf(added)))
+            } else {
+                ResponseEntity.status(401).body("Unauthorized")
+            }
+        } else {
+            ResponseEntity.status(401).body("Unauthorized")
+        }
+    }
 
-                return ResponseEntity.ok(DetailedResponse("Successfully Saved Hospital", listOf(added)))
+    fun updateHospital(providerId: String, stuffToUpdate: Map<String, String>, Authorization: String?) : ResponseEntity<Any> {
+        return if (Authorization != null) {
+            if (authController.validateAdmin(Authorization)) {
+
+                if (!mongoTemplate.exists(Query().addCriteria(Criteria.where("providerId").isEqualTo(providerId)), Hospital::class.java)) {
+                    return ResponseEntity.badRequest().body("Hospital with providerId: $providerId does not exist")
+                }
+
+                val query = Query(Criteria.where("providerId").isEqualTo(providerId))
+                val update = Update()
+
+                stuffToUpdate.forEach{
+                    if (!allowedEdits.contains(it.key)) return ResponseEntity.badRequest().body(ErrorResponse("400 Bad Request", "${it.key} is not a valid key to edit"))
+                    update.set(it.key, it.value)
+                }
+
+                mongoTemplate.updateFirst(query, update, Hospital::class.java)
+
+                val updated = listOfNotNull(mongoTemplate.findOne(query, Hospital::class.java))
+
+                return ResponseEntity.status(201).body(DetailedResponse("Successfully Updated Hospital", updated))
             } else {
                 ResponseEntity.status(401).body("Unauthorized")
             }
