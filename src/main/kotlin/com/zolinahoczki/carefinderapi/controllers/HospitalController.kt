@@ -17,7 +17,6 @@ import org.springframework.stereotype.Controller
 
 @Controller
 class HospitalController(
-    @Autowired
     private val authController: AuthController,
     @Autowired
     private val mongoTemplate: MongoTemplate,
