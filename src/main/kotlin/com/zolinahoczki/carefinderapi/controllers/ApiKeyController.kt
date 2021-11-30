@@ -13,6 +13,7 @@ import java.util.*
 
 @Controller
 class ApiKeyController(
+    private val authController: AuthController,
     @Autowired
     private val apiKeyRepository: ApiKeyRepository,
     @Autowired

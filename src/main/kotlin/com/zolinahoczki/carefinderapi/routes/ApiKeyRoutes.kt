@@ -11,7 +11,8 @@ class ApiKeyRoutes(
     private val apiKeyController: ApiKeyController
 ) {
     @GetMapping("")
-    fun getApiKeys(@RequestParam(required = false) params: Map<String, String>?) : ResponseEntity<Any> {
+    fun getApiKeys(@RequestParam(required = false) params: Map<String, String>?,
+                   @RequestHeader(required = false) Authorization: String?) : ResponseEntity<Any> {
         // Params are optional but are used to search
         return if (params == null || params.isEmpty()) {
             apiKeyController.getAll()

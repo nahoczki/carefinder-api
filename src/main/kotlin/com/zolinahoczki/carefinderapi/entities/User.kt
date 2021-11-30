@@ -1,5 +1,6 @@
 package com.zolinahoczki.carefinderapi.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
@@ -11,6 +12,7 @@ data class User(
     val _id: ObjectId? = ObjectId(),
     val role: String? = Roles.USER.role,
     val email: String,
+    @JsonIgnore
     val password: String,
     val createdAt: Date? = Date(),
     val lastSignedIn: Date? = Date(),

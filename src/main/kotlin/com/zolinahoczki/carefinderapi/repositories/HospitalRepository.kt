@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Query
 
 interface HospitalRepository : MongoRepository<Hospital, String>{
     fun findAllByNameRegex(name: String) : List<Hospital>
+    fun existsHospitalByProviderId(providerId: String) : Boolean
 
 //    @Query(searchParams)
 //    fun findBySearch(searchParams: Map<String, String>) : List<Hospital>? {
