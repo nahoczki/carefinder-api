@@ -8,6 +8,8 @@ interface ApiKeyRepository : MongoRepository<ApiKey, String>{
     fun findOneByApiKey(apikey: String) : ApiKey?
     fun existsByApiKey(apiKey: String) : Boolean
     fun existsByName(name: String) : Boolean
+    fun deleteApiKeyByApiKey(apikey: String) : ApiKey
+    fun deleteApiKeyByName(name: String) : ApiKey
 
 //    @Query(searchParams)
 //    fun findBySearch(searchParams: Map<String, String>) : List<Hospital>? {

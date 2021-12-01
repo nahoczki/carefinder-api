@@ -15,12 +15,29 @@ class ApiKeyRoutes(
                    @RequestHeader(required = false) Authorization: String?) : ResponseEntity<Any> {
         // Params are optional but are used to search
         return if (params == null || params.isEmpty()) {
-            apiKeyController.getAll()
+            apiKeyController.getAll(Authorization)
         } else {
             if (params.contains("name")) {
-                apiKeyController.searchByName(params.getValue("name"))
+                apiKeyController.searchByName(params.getValue("name"), Authorization)
             } else if (params.contains("apikey")) {
-                apiKeyController.searchByApiKey(params.getValue("apikey"))
+                apiKeyController.searchByApiKey(params.getValue("apikey"), Authorization)
+            } else {
+                ResponseEntity.badRequest().body("400 Bad request")
+            }
+        }
+    }
+
+    @DeleteMapping("")
+    fun deleteApiKeys(@RequestParam(required = false) params: Map<String, String>?,
+                   @RequestHeader(required = false) Authorization: String?) : ResponseEntity<Any> {
+        // Params are optional but are used to search
+        return if (params == null || params.isEmpty()) {
+            apiKeyController.deleteAll(Authorization)
+        } else {
+            if (params.contains("name")) {
+                apiKeyController.deleteByName(params.getValue("name"), Authorization)
+            } else if (params.contains("apikey")) {
+                apiKeyController.deleteByApiKey(params.getValue("apikey"), Authorization)
             } else {
                 ResponseEntity.badRequest().body("400 Bad request")
             }

@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Update
 import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
+import java.util.*
 
 @Controller
 class HospitalController(
@@ -89,7 +90,7 @@ class HospitalController(
                 val hospital = Hospital(
                     providerId = hospitalToCreate.providerId,
                     location = HospitalLocation(
-                        humanAddress = "",
+                        humanAddress = "{\"address\":\"${hospitalToCreate.address}\",\"city\":\"${hospitalToCreate.city}\",\"state\":\"${hospitalToCreate.state.uppercase()}\",\"zip\":\"${hospitalToCreate.zipCode}\"}",
                         latitude = hospitalToCreate.lat,
                         longitude = hospitalToCreate.long,
                         needsRecoding = "false"
@@ -97,7 +98,7 @@ class HospitalController(
                     name = hospitalToCreate.name,
                     address = hospitalToCreate.address,
                     city = hospitalToCreate.city,
-                    state = hospitalToCreate.state,
+                    state = hospitalToCreate.state.uppercase(),
                     zipCode = hospitalToCreate.zipCode,
                     county = hospitalToCreate.county,
                     phoneNumber = hospitalToCreate.phoneNumber,
