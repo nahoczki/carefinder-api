@@ -24,6 +24,23 @@ class AuthRoutes(
         }
     }
 
+    @PutMapping("/updaterole")
+    fun updateUsersRole(
+        @RequestHeader(required = false) Authorization: String?,
+        @RequestParam(required = true, value = "email") toUpdateEmail: String,
+        @RequestParam(required = true, value = "role") roleToUpdateTo: String
+    ) : ResponseEntity<Any> {
+        return if (Authorization != null) {
+            if (authController.validateAdmin(Authorization)) {
+                authController.changeUserRole(toUpdateEmail, roleToUpdateTo)
+            } else {
+                ResponseEntity.status(401).body("Unauthorized")
+            }
+        } else {
+            ResponseEntity.status(401).body("Unauthorized")
+        }
+    }
+
     @PostMapping("/register")
     fun registerUser(
         @RequestParam(required = true) email: String,

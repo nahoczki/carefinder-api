@@ -3,6 +3,8 @@ package com.zolinahoczki.carefinderapi.controllers
 import com.zolinahoczki.carefinderapi.entities.Roles
 import com.zolinahoczki.carefinderapi.entities.User
 import com.zolinahoczki.carefinderapi.repositories.UserRepository
+import com.zolinahoczki.carefinderapi.responseObjects.DetailedResponse
+import com.zolinahoczki.carefinderapi.responseObjects.ErrorResponse
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Autowired
@@ -63,6 +65,23 @@ class AuthController(
         }
         // By default, if user does not exist or password does not match, return this response
         return ResponseEntity.badRequest().body("User does not exist or password is incorrect")
+    }
+
+    fun changeUserRole(userEmailToEdit: String, role: String) : ResponseEntity<Any> {
+        val user = userRepository.findOneByEmail(userEmailToEdit)
+
+        if (user != null) {
+            when (role.uppercase()) {
+                "ADMIN" -> user.role = "ADMIN"
+                "USER" -> user.role = "USER"
+                else -> return ResponseEntity.badRequest().body(ErrorResponse("400 Bad Request", "Invalid role given"))
+            }
+
+            val savedUser = userRepository.save(user)
+            return ResponseEntity.ok(DetailedResponse("Changed user's role to: $role", listOf(savedUser)))
+        }
+
+        return ResponseEntity.badRequest().body("User does not exist")
     }
 
     fun validateAdmin(jwt: String): Boolean {

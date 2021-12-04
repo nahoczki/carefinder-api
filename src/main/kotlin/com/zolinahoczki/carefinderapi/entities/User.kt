@@ -10,7 +10,7 @@ import java.util.Date
 data class User(
     @Id
     val _id: ObjectId? = ObjectId(),
-    val role: String? = Roles.USER.role,
+    var role: String? = Roles.USER.role,
     val email: String,
     @JsonIgnore
     val password: String,
