@@ -4,6 +4,22 @@
 A RESTful service built upon an open source list of hospital data.
 
 
+## Environment Variables
+
+To run this project, you will need to add the following environment variables
+
+`CONNECT_URI`
+
+`DB_NAME`
+
+`JWT_SECRET`
+
+
+## Todo
+
+- [ ] Implement Middleware for Authorization
+- [x] Write code
+
 ## API Reference
 
 - [/api/auth](#auth-routes)
@@ -189,7 +205,7 @@ A RESTful service built upon an open source list of hospital data.
 | `key` | `string` | **Required**. A generated apikey |
 | `authorization` | `string` | **Required**. A admin user's JWT |
 
-##### Sample Request Body (JSON) 
+##### Sample Request Body (JSON)
 ##### (All fields are optional, depends on what needs to be updated)
 
 ```yaml
@@ -225,4 +241,3 @@ A RESTful service built upon an open source list of hospital data.
 | :-------- | :------- | :------------------------- |
 | `key` | `string` | **Required**. A generated apikey |
 | `authorization` | `string` | **Required**. A admin user's JWT |
-
