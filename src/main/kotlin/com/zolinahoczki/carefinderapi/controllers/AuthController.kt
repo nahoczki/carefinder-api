@@ -27,16 +27,16 @@ class AuthController(
     private val jwtPrivateKey: String? = null
 
     fun getAll() : ResponseEntity<Any> {
-        return ResponseEntity.ok(userRepository.findAll())
+        return ResponseEntity.ok(DetailedResponse("Successfully retrieved user data", userRepository.findAll()))
     }
 
     fun register(email: String, password: String) : ResponseEntity<Any> {
 
         if (userRepository.existsByEmail(email)) {
-            return ResponseEntity.badRequest().body("Error signing up; Email already in use")
+            return ResponseEntity.status(409).body(ErrorResponse("409 Conflicting Data", "Email is already in use."))
         }
 
-        return ResponseEntity.ok(userRepository.save(User(email = email, password = passwordEncoder.encode(password))))
+        return ResponseEntity.ok(DetailedResponse("Successfully registered user", listOf(userRepository.save(User(email = email, password = passwordEncoder.encode(password))))))
     }
 
     fun login(email: String, password: String) : ResponseEntity<Any> {
@@ -65,11 +65,11 @@ class AuthController(
 
                 return ResponseEntity.ok()
                     .headers(headers)
-                    .body(user)
+                    .body(DetailedResponse("Successfully Logged in", listOf(user)))
             }
         }
         // By default, if user does not exist or password does not match, return this response
-        return ResponseEntity.badRequest().body("User does not exist or password is incorrect")
+        return ResponseEntity.badRequest().body(ErrorResponse("400 Bad Request", "User does not exist or password is incorrect"))
     }
 
     fun changeUserRole(userEmailToEdit: String, role: String) : ResponseEntity<Any> {
@@ -86,7 +86,7 @@ class AuthController(
             return ResponseEntity.ok(DetailedResponse("Changed user's role to: $role", listOf(savedUser)))
         }
 
-        return ResponseEntity.badRequest().body("User does not exist")
+        return ResponseEntity.badRequest().body(ErrorResponse("400 Bad Request", "User does not exist"))
     }
 
     fun validateAdmin(jwt: String): Boolean {

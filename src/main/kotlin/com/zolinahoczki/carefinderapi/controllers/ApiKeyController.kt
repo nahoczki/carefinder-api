@@ -29,10 +29,10 @@ class ApiKeyController(
             if (authController.validateAdmin(Authorization)) {
                 ResponseEntity.ok(apiKeyRepository.findAll())
             } else {
-                ResponseEntity.status(401).body("Unauthorized")
+                ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }
         } else {
-            ResponseEntity.status(401).body("Unauthorized")
+            ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
         }
     }
 
@@ -41,10 +41,10 @@ class ApiKeyController(
             if (authController.validateAdmin(Authorization)) {
                 ResponseEntity.ok(apiKeyRepository.findOneByName(name))
             } else {
-                ResponseEntity.status(401).body("Unauthorized")
+                ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }
         } else {
-            ResponseEntity.status(401).body("Unauthorized")
+            ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
         }
     }
 
@@ -53,10 +53,10 @@ class ApiKeyController(
             if (authController.validateAdmin(Authorization)) {
                 ResponseEntity.ok(apiKeyRepository.findOneByApiKey(apiKey))
             } else {
-                ResponseEntity.status(401).body("Unauthorized")
+                ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }
         } else {
-            ResponseEntity.status(401).body("Unauthorized")
+            ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
         }
     }
 

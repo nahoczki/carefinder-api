@@ -1,6 +1,7 @@
 package com.zolinahoczki.carefinderapi.routes
 
 import com.zolinahoczki.carefinderapi.controllers.ApiKeyController
+import com.zolinahoczki.carefinderapi.responseObjects.ErrorResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -22,7 +23,7 @@ class ApiKeyRoutes(
             } else if (params.contains("apikey")) {
                 apiKeyController.searchByApiKey(params.getValue("apikey"), Authorization)
             } else {
-                ResponseEntity.badRequest().body("400 Bad request")
+                ResponseEntity.badRequest().body(ErrorResponse("400 Bad Request", "Provided search parameter is invalid"))
             }
         }
     }
@@ -39,7 +40,7 @@ class ApiKeyRoutes(
             } else if (params.contains("apikey")) {
                 apiKeyController.deleteByApiKey(params.getValue("apikey"), Authorization)
             } else {
-                ResponseEntity.badRequest().body("400 Bad request")
+                ResponseEntity.badRequest().body(ErrorResponse("400 Bad Request", "Provided search parameter is invalid"))
             }
         }
     }

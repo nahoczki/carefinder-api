@@ -27,7 +27,7 @@ class HospitalController(
 
     // Getters
     fun getAll() : ResponseEntity<Any> {
-        return ResponseEntity.ok(mongoTemplate.findAll(Hospital::class.java));
+        return ResponseEntity.ok(DetailedResponse("Successfully retrieved hospital data", mongoTemplate.findAll(Hospital::class.java)));
     }
 
     fun search(searchQuery: Map<String, String>) : ResponseEntity<Any> {
@@ -35,11 +35,11 @@ class HospitalController(
         val query = Query()
 
         searchQuery.forEach{
-            if (!params.contains(it.key)) return ResponseEntity.badRequest().body("400 Bad Request")
+            if (!params.contains(it.key)) return ResponseEntity.badRequest().body(ErrorResponse("400 Bad Request", "${it.key} is not a valid search parameter"))
             query.addCriteria(Criteria.where(it.key).regex(it.value.uppercase()))
         }
 
-        return ResponseEntity.ok(mongoTemplate.find(query, Hospital::class.java))
+        return ResponseEntity.ok(DetailedResponse("Successfully retrieved hospital data", mongoTemplate.find(query, Hospital::class.java)))
     }
 
     // Deletes
@@ -49,10 +49,10 @@ class HospitalController(
                 val removed = mongoTemplate.findAllAndRemove(Query(), Hospital::class.java)
                 ResponseEntity.ok(DetailedResponse("Successfully Removed Hospital(s)", removed))
             } else {
-                ResponseEntity.status(401).body("Unauthorized")
+                ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }
         } else {
-            ResponseEntity.status(401).body("Unauthorized")
+            ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
         }
     }
 
@@ -62,7 +62,7 @@ class HospitalController(
                 val query = Query()
 
                 searchQuery.forEach{
-                    if (!params.contains(it.key)) return ResponseEntity.badRequest().body("400 Bad Request")
+                    if (!params.contains(it.key)) return ResponseEntity.badRequest().body(ErrorResponse("400 Bad Request", "${it.key} is not a valid search parameter"))
                     query.addCriteria(Criteria.where(it.key).regex(it.value.uppercase()))
                 }
 
@@ -70,10 +70,10 @@ class HospitalController(
 
                 return ResponseEntity.ok(DetailedResponse("Successfully Removed Hospital(s)", removed))
             } else {
-                ResponseEntity.status(401).body("Unauthorized")
+                ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }
         } else {
-            ResponseEntity.status(401).body("Unauthorized")
+            ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
         }
     }
 
@@ -84,7 +84,7 @@ class HospitalController(
             if (authController.validateAdmin(Authorization)) {
 
                 if (mongoTemplate.exists(Query().addCriteria(Criteria.where("providerId").isEqualTo(hospitalToCreate.providerId)), Hospital::class.java)) {
-                    return ResponseEntity.badRequest().body("Hospital with providerId: ${hospitalToCreate.providerId} already exists")
+                    return ResponseEntity.status(409).body(ErrorResponse("409 Conflicting Data", "Hospital with providerId: ${hospitalToCreate.providerId} already exists"))
                 }
 
                 val hospital = Hospital(
@@ -110,10 +110,10 @@ class HospitalController(
                 val added = mongoTemplate.insert(hospital)
                 return ResponseEntity.status(201).body(DetailedResponse("Successfully Saved Hospital", listOf(added)))
             } else {
-                ResponseEntity.status(401).body("Unauthorized")
+                ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }
         } else {
-            ResponseEntity.status(401).body("Unauthorized")
+            ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
         }
     }
 
@@ -122,7 +122,7 @@ class HospitalController(
             if (authController.validateAdmin(Authorization)) {
 
                 if (!mongoTemplate.exists(Query().addCriteria(Criteria.where("providerId").isEqualTo(providerId)), Hospital::class.java)) {
-                    return ResponseEntity.badRequest().body("Hospital with providerId: $providerId does not exist")
+                    return ResponseEntity.badRequest().body(ErrorResponse("400 Bad Request","Hospital with providerId $providerId does not exist"))
                 }
 
                 val query = Query(Criteria.where("providerId").isEqualTo(providerId))
@@ -139,10 +139,10 @@ class HospitalController(
 
                 return ResponseEntity.status(201).body(DetailedResponse("Successfully Updated Hospital", updated))
             } else {
-                ResponseEntity.status(401).body("Unauthorized")
+                ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }
         } else {
-            ResponseEntity.status(401).body("Unauthorized")
+            ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
         }
     }
 }

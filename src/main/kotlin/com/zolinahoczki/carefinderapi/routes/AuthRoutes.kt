@@ -1,6 +1,7 @@
 package com.zolinahoczki.carefinderapi.routes
 
 import com.zolinahoczki.carefinderapi.controllers.AuthController
+import com.zolinahoczki.carefinderapi.responseObjects.ErrorResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -17,10 +18,10 @@ class AuthRoutes(
             if (authController.validateAdmin(Authorization)) {
                 authController.getAll()
             } else {
-                ResponseEntity.status(401).body("Unauthorized")
+                ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }
         } else {
-            ResponseEntity.status(401).body("Unauthorized")
+            ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
         }
     }
 
@@ -34,10 +35,10 @@ class AuthRoutes(
             if (authController.validateAdmin(Authorization)) {
                 authController.changeUserRole(toUpdateEmail, roleToUpdateTo)
             } else {
-                ResponseEntity.status(401).body("Unauthorized")
+                ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }
         } else {
-            ResponseEntity.status(401).body("Unauthorized")
+            ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
         }
     }
 

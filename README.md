@@ -18,6 +18,7 @@ To run this project, you will need to add the following environment variables
 ## Todo
 
 - [ ] Implement Middleware for Authorization
+- [x] Clean up Response error messages
 - [x] Write code
 
 ## API Reference
