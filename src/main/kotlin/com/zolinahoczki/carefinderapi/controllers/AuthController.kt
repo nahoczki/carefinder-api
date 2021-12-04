@@ -58,6 +58,11 @@ class AuthController(
                 val headers = HttpHeaders()
                 headers.add("Authorization", jwt)
 
+                // Update user's last login
+                user.lastSignedIn = Date()
+
+                userRepository.save(user)
+
                 return ResponseEntity.ok()
                     .headers(headers)
                     .body(user)

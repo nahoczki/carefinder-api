@@ -15,7 +15,7 @@ data class User(
     @JsonIgnore
     val password: String,
     val createdAt: Date? = Date(),
-    val lastSignedIn: Date? = Date(),
+    var lastSignedIn: Date? = Date(),
 )
 
 enum class Roles(val role: String) {
