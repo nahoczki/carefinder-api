@@ -108,7 +108,7 @@ class HospitalController(
                 )
 
                 val added = mongoTemplate.insert(hospital)
-                return ResponseEntity.status(201).body(DetailedResponse("Successfully Saved Hospital", listOf(added)))
+                return ResponseEntity.status(201).body(DetailedResponse("Successfully Saved Hospital", added))
             } else {
                 ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }
@@ -135,9 +135,9 @@ class HospitalController(
 
                 mongoTemplate.updateFirst(query, update, Hospital::class.java)
 
-                val updated = listOfNotNull(mongoTemplate.findOne(query, Hospital::class.java))
+                val updated = mongoTemplate.findOne(query, Hospital::class.java)
 
-                return ResponseEntity.status(201).body(DetailedResponse("Successfully Updated Hospital", updated))
+                return ResponseEntity.status(201).body(DetailedResponse("Successfully Updated Hospital", updated!!))
             } else {
                 ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }

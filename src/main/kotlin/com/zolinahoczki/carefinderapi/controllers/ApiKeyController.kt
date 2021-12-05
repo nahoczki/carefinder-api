@@ -27,7 +27,7 @@ class ApiKeyController(
     fun getAll(Authorization: String?) : ResponseEntity<Any> {
         return if (Authorization != null) {
             if (authController.validateAdmin(Authorization)) {
-                ResponseEntity.ok(apiKeyRepository.findAll())
+                ResponseEntity.ok(DetailedResponse("Successfully retrieved apikey data", apiKeyRepository.findAll()))
             } else {
                 ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }
@@ -39,7 +39,12 @@ class ApiKeyController(
     fun searchByName(name: String, Authorization: String?) : ResponseEntity<Any> {
         return if (Authorization != null) {
             if (authController.validateAdmin(Authorization)) {
-                ResponseEntity.ok(apiKeyRepository.findOneByName(name))
+                val retrieved = apiKeyRepository.findOneByName(name)
+                if (retrieved != null) {
+                    ResponseEntity.ok(DetailedResponse("Successfully retrieved apikey data", retrieved))
+                } else {
+                    ResponseEntity.badRequest().body(ErrorResponse("400 Bad Request", "Apikey does not exist with name $name"))
+                }
             } else {
                 ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }
@@ -51,7 +56,13 @@ class ApiKeyController(
     fun searchByApiKey(apiKey: String, Authorization: String?) : ResponseEntity<Any> {
         return if (Authorization != null) {
             if (authController.validateAdmin(Authorization)) {
-                ResponseEntity.ok(apiKeyRepository.findOneByApiKey(apiKey))
+                val retrieved = apiKeyRepository.findOneByApiKey(apiKey)
+                if (retrieved != null) {
+                    ResponseEntity.ok(DetailedResponse("Successfully retrieved apikey data", retrieved))
+                } else {
+                    ResponseEntity.badRequest().body(ErrorResponse("400 Bad Request", "Apikey does not exist with key $apiKey"))
+                }
+
             } else {
                 ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }
@@ -79,7 +90,7 @@ class ApiKeyController(
                 if (!apiKeyRepository.existsByApiKey(apiKey)) {
                     ResponseEntity.badRequest().body(ErrorResponse("400 Bad request", "There is no Api key with the key: $apiKey"))
                 }
-                ResponseEntity.ok(DetailedResponse("Successfully removed api key", listOf(apiKeyRepository.deleteApiKeyByApiKey(apiKey))))
+                ResponseEntity.ok(DetailedResponse("Successfully removed api key", apiKeyRepository.deleteApiKeyByApiKey(apiKey)))
             } else {
                 ResponseEntity.status(401).body("Unauthorized")
             }
@@ -94,7 +105,7 @@ class ApiKeyController(
                 if (!apiKeyRepository.existsByName(name)) {
                     ResponseEntity.badRequest().body(ErrorResponse("400 Bad request", "There is no Api key with the name: $name"))
                 }
-                ResponseEntity.ok(DetailedResponse("Successfully removed api key", listOf(apiKeyRepository.deleteApiKeyByName(name))))
+                ResponseEntity.ok(DetailedResponse("Successfully removed api key", apiKeyRepository.deleteApiKeyByName(name)))
             } else {
                 ResponseEntity.status(401).body("Unauthorized")
             }
@@ -114,7 +125,7 @@ class ApiKeyController(
 
             ResponseEntity.ok(mongoTemplate.insert(ApiKey(name = name, apiKey = genKey)))
         } else {
-            ResponseEntity.badRequest().body("Error: Api key name already exists")
+            ResponseEntity.status(409).body(ErrorResponse("409 Conflicting Data","Api key name already exists"))
         }
     }
 }

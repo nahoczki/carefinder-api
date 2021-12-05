@@ -5,5 +5,5 @@ import lombok.Value
 @Value
 class DetailedResponse (
     val message: String,
-    val items: List<Any>
+    val data: Any
 )

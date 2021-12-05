@@ -36,7 +36,7 @@ class AuthController(
             return ResponseEntity.status(409).body(ErrorResponse("409 Conflicting Data", "Email is already in use."))
         }
 
-        return ResponseEntity.ok(DetailedResponse("Successfully registered user", listOf(userRepository.save(User(email = email, password = passwordEncoder.encode(password))))))
+        return ResponseEntity.ok(DetailedResponse("Successfully registered user", userRepository.save(User(email = email, password = passwordEncoder.encode(password)))))
     }
 
     fun login(email: String, password: String) : ResponseEntity<Any> {
@@ -65,7 +65,7 @@ class AuthController(
 
                 return ResponseEntity.ok()
                     .headers(headers)
-                    .body(DetailedResponse("Successfully Logged in", listOf(user)))
+                    .body(DetailedResponse("Successfully Logged in", user))
             }
         }
         // By default, if user does not exist or password does not match, return this response
@@ -83,7 +83,7 @@ class AuthController(
             }
 
             val savedUser = userRepository.save(user)
-            return ResponseEntity.ok(DetailedResponse("Changed user's role to: $role", listOf(savedUser)))
+            return ResponseEntity.ok(DetailedResponse("Changed user's role to: $role", savedUser))
         }
 
         return ResponseEntity.badRequest().body(ErrorResponse("400 Bad Request", "User does not exist"))
