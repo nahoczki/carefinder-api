@@ -123,7 +123,7 @@ class ApiKeyController(
                 genKey = UUID.randomUUID().toString()
             }
 
-            ResponseEntity.ok(mongoTemplate.insert(ApiKey(name = name, apiKey = genKey)))
+            ResponseEntity.ok(DetailedResponse("Successfully Created Api key", mongoTemplate.insert(ApiKey(name = name, apiKey = genKey))))
         } else {
             ResponseEntity.status(409).body(ErrorResponse("409 Conflicting Data","Api key name already exists"))
         }
