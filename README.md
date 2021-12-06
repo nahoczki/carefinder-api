@@ -101,7 +101,7 @@ To run this project, you will need to add the following environment variables
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
 | `name`      | `string` | Search for key by name|
-| `key`      | `string` | Search for key by key|
+| `apikey`      | `string` | Search for key by key|
 
 ##### Headers
 | Header | Type     | Description                |
@@ -127,7 +127,7 @@ To run this project, you will need to add the following environment variables
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
 | `name`      | `string` | Delete key by name|
-| `key`      | `string` | Delete key by key|
+| `apikey`      | `string` | Delete key by key|
 
 ##### Headers
 | Header | Type     | Description                |

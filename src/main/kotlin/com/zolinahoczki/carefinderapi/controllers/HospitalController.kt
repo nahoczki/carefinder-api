@@ -137,7 +137,7 @@ class HospitalController(
 
                 val updated = mongoTemplate.findOne(query, Hospital::class.java)
 
-                return ResponseEntity.status(201).body(DetailedResponse("Successfully Updated Hospital", updated!!))
+                return ResponseEntity.ok(DetailedResponse("Successfully Updated Hospital", updated!!))
             } else {
                 ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
             }
