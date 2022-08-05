@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.RequestEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 @RequestMapping("/hospitals")
@@ -15,12 +16,13 @@ class HospitalRoutes(
 ) {
 
     @GetMapping("")
-    fun getHospitals(@RequestParam(required = false) params: Map<String, String>?) : ResponseEntity<Any> {
+    fun getHospitals(@RequestParam(required = false) params: Map<String, String>?,
+                     @RequestHeader(required = false) format: String = "json") : ResponseEntity<Any> {
         // Params are optional but are used to search
         return if (params == null || params.isEmpty()) {
-            hospitalController.getAll()
+            hospitalController.getAll(format.lowercase(Locale.getDefault()))
         } else {
-            hospitalController.search(params)
+            hospitalController.search(params, format.lowercase(Locale.getDefault()))
         }
     }
 

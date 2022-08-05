@@ -2,19 +2,18 @@ package com.zolinahoczki.carefinderapi.controllers
 
 import com.zolinahoczki.carefinderapi.entities.Hospital
 import com.zolinahoczki.carefinderapi.entities.HospitalLocation
+import com.zolinahoczki.carefinderapi.helpers.GeoJSONCreator
 import com.zolinahoczki.carefinderapi.requestObjects.HospitalCreateRequest
 import com.zolinahoczki.carefinderapi.responseObjects.DetailedResponse
 import com.zolinahoczki.carefinderapi.responseObjects.ErrorResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
-import org.springframework.data.mongodb.core.find
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.Update
 import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
-import java.util.*
 
 @Controller
 class HospitalController(
@@ -26,11 +25,15 @@ class HospitalController(
     private val allowedEdits = listOf("providerId", "name", "city", "state", "zipCode", "county", "phoneNumber")
 
     // Getters
-    fun getAll() : ResponseEntity<Any> {
-        return ResponseEntity.ok(DetailedResponse("Successfully retrieved hospital data", mongoTemplate.findAll(Hospital::class.java)));
+    fun getAll(format: String) : ResponseEntity<Any> {
+        return if (format == "geojson") {
+            ResponseEntity.ok(DetailedResponse("Successfully retrieved hospital data", GeoJSONCreator().fromHospitals(mongoTemplate.findAll(Hospital::class.java))));
+        } else {
+            ResponseEntity.ok(DetailedResponse("Successfully retrieved hospital data", mongoTemplate.findAll(Hospital::class.java)));
+        }
     }
 
-    fun search(searchQuery: Map<String, String>) : ResponseEntity<Any> {
+    fun search(searchQuery: Map<String, String>, format: String) : ResponseEntity<Any> {
 
         val query = Query()
 
@@ -39,7 +42,11 @@ class HospitalController(
             query.addCriteria(Criteria.where(it.key).regex(it.value.uppercase()))
         }
 
-        return ResponseEntity.ok(DetailedResponse("Successfully retrieved hospital data", mongoTemplate.find(query, Hospital::class.java)))
+        return if (format == "geojson") {
+            ResponseEntity.ok(DetailedResponse("Successfully retrieved hospital data", GeoJSONCreator().fromHospitals(mongoTemplate.find(query, Hospital::class.java))));
+        } else {
+            ResponseEntity.ok(DetailedResponse("Successfully retrieved hospital data", mongoTemplate.find(query, Hospital::class.java)));
+        }
     }
 
     // Deletes
