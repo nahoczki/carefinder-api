@@ -15,6 +15,9 @@ class GeoJSONCreator {
 
             // Set up properties
             properties["providerId"] = hospital.providerId
+            properties["name"] = hospital.name
+            properties["emergencyServices"] = hospital.emergencyServices
+            properties["address"] = hospital.address
 
             // Set up geometry
             geometry["type"] = "Point"
