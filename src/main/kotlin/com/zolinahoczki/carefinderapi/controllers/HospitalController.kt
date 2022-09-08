@@ -85,44 +85,42 @@ class HospitalController(
     }
 
     // Update/Create
-
-    fun createHospital(hospitalToCreate: HospitalCreateRequest, Authorization: String?) : ResponseEntity<Any> {
-        return if (Authorization != null) {
-            if (authController.validateAdmin(Authorization)) {
-
-                if (mongoTemplate.exists(Query().addCriteria(Criteria.where("providerId").isEqualTo(hospitalToCreate.providerId)), Hospital::class.java)) {
-                    return ResponseEntity.status(409).body(ErrorResponse("409 Conflicting Data", "Hospital with providerId: ${hospitalToCreate.providerId} already exists"))
-                }
-
-                val hospital = Hospital(
-                    providerId = hospitalToCreate.providerId,
-                    location = HospitalLocation(
-                        humanAddress = "{\"address\":\"${hospitalToCreate.address}\",\"city\":\"${hospitalToCreate.city}\",\"state\":\"${hospitalToCreate.state.uppercase()}\",\"zip\":\"${hospitalToCreate.zipCode}\"}",
-                        latitude = hospitalToCreate.lat,
-                        longitude = hospitalToCreate.long,
-                        needsRecoding = "false"
-                    ),
-                    name = hospitalToCreate.name,
-                    address = hospitalToCreate.address,
-                    city = hospitalToCreate.city,
-                    state = hospitalToCreate.state.uppercase(),
-                    zipCode = hospitalToCreate.zipCode,
-                    county = hospitalToCreate.county,
-                    phoneNumber = hospitalToCreate.phoneNumber,
-                    hospitalType = hospitalToCreate.hospitalType,
-                    ownership = hospitalToCreate.ownership,
-                    emergencyServices = hospitalToCreate.emergencyServices
-                )
-
-                val added = mongoTemplate.insert(hospital)
-                return ResponseEntity.status(201).body(DetailedResponse("Successfully Saved Hospital", added))
-            } else {
-                ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
-            }
-        } else {
-            ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
-        }
-    }
+    // TODO: UPDATE CREATE HOSPITAL TO NEW DATAMODEL
+//    fun createHospital(hospitalToCreate: HospitalCreateRequest, Authorization: String?) : ResponseEntity<Any> {
+//        return if (Authorization != null) {
+//            if (authController.validateAdmin(Authorization)) {
+//
+//                if (mongoTemplate.exists(Query().addCriteria(Criteria.where("providerId").isEqualTo(hospitalToCreate.providerId)), Hospital::class.java)) {
+//                    return ResponseEntity.status(409).body(ErrorResponse("409 Conflicting Data", "Hospital with providerId: ${hospitalToCreate.providerId} already exists"))
+//                }
+//
+//                val hospital = Hospital(
+//                    providerId = hospitalToCreate.providerId,
+//                    location = HospitalLocation(
+//                        latitude = hospitalToCreate.lat,
+//                        longitude = hospitalToCreate.long,
+//                    ),
+//                    name = hospitalToCreate.name,
+//                    address = hospitalToCreate.address,
+//                    city = hospitalToCreate.city,
+//                    state = hospitalToCreate.state.uppercase(),
+//                    zipCode = hospitalToCreate.zipCode,
+//                    county = hospitalToCreate.county,
+//                    phoneNumber = hospitalToCreate.phoneNumber,
+//                    hospitalType = hospitalToCreate.hospitalType,
+//                    ownership = hospitalToCreate.ownership,
+//                    emergencyServices = hospitalToCreate.emergencyServices
+//                )
+//
+//                val added = mongoTemplate.insert(hospital)
+//                return ResponseEntity.status(201).body(DetailedResponse("Successfully Saved Hospital", added))
+//            } else {
+//                ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
+//            }
+//        } else {
+//            ResponseEntity.status(401).body(ErrorResponse("401 Unauthorized", "Access Denied."))
+//        }
+//    }
 
     fun updateHospital(providerId: String, stuffToUpdate: Map<String, String>, Authorization: String?) : ResponseEntity<Any> {
         return if (Authorization != null) {

@@ -18,6 +18,9 @@ class GeoJSONCreator {
             properties["name"] = hospital.name
             properties["emergencyServices"] = hospital.emergencyServices
             properties["address"] = hospital.address
+            properties["rating"] = hospital.rating.toString()
+            properties["ratingNote"] = hospital.ratingNote
+            properties["image"] = hospital.image
 
             // Set up geometry
             geometry["type"] = "Point"

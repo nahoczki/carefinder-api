@@ -20,11 +20,30 @@ data class Hospital(
     val hospitalType: String,
     val ownership: String,
     val emergencyServices: String,
+    val rating: Number,
+    val ratingNote: String = "",
+    val image: String = "",
+    val googleRating: GoogleRating,
+    val needsReview: Boolean,
 )
 
 data class HospitalLocation(
-    val humanAddress: String,
     val latitude: Double,
     val longitude: Double,
-    val needsRecoding: String
+)
+
+data class GoogleRating(
+    val rating: Number,
+    val reviews: Array<GoogleReview>
+)
+
+data class GoogleReview(
+    val author_name: String,
+    val author_url: String,
+    val language: String,
+    val profile_photo_url: String,
+    val rating: Number,
+    val relative_time_description: String,
+    val text: String,
+    val time: Number
 )

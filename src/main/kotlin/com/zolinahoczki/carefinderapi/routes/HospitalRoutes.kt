@@ -26,11 +26,11 @@ class HospitalRoutes(
         }
     }
 
-    @PostMapping("")
-    fun createHospital(@RequestBody body: HospitalCreateRequest,
-                       @RequestHeader(required = false) Authorization: String?) : ResponseEntity<Any> {
-        return hospitalController.createHospital(body, Authorization)
-    }
+//    @PostMapping("")
+//    fun createHospital(@RequestBody body: HospitalCreateRequest,
+//                       @RequestHeader(required = false) Authorization: String?) : ResponseEntity<Any> {
+//        return hospitalController.createHospital(body, Authorization)
+//    }
 
     @DeleteMapping("")
     fun deleteHospital(@RequestParam(required = false) params: Map<String, String>?,
