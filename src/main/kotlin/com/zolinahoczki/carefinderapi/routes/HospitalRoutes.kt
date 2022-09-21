@@ -17,12 +17,14 @@ class HospitalRoutes(
 
     @GetMapping("")
     fun getHospitals(@RequestParam(required = false) params: Map<String, String>?,
-                     @RequestHeader(required = false) format: String = "json") : ResponseEntity<Any> {
+                     @RequestHeader(required = false) format: String?) : ResponseEntity<Any> {
+        val form = format ?: "json"
+
         // Params are optional but are used to search
         return if (params == null || params.isEmpty()) {
-            hospitalController.getAll(format.lowercase(Locale.getDefault()))
+            hospitalController.getAll(form.lowercase(Locale.getDefault()))
         } else {
-            hospitalController.search(params, format.lowercase(Locale.getDefault()))
+            hospitalController.search(params, form.lowercase(Locale.getDefault()))
         }
     }
 
